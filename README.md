@@ -46,6 +46,23 @@ Make an array that contains all elements that appear more than twice in someRepe
 
 ```swift
 var someRepeatsAgain = [25,11,30,31,50,28,4,37,13,20,24,38,28,14,44,33,7,43,39,35,36,42,1,40,7,14,23,46,21,39,11,42,12,38,41,48,20,23,29,24,50,41,38,23,11,30,50,13,13,16,10,8,3,43,10,20,28,39,24,36,21,13,40,25,37,39,31,4,46,20,38,2,7,11,11,41,45,9,49,31,38,23,41,16,49,29,14,6,6,11,5,39,13,17,43,1,1,15,25]
+
+
+var dupeCheck = [Int]()
+var dupeCheck2 = [Int]()
+var dupes = [Int]()
+
+for i in someRepeatsAgain {
+if dupeCheck2.contains(i) && dupes.contains(i) == false {
+dupes += [i]
+}
+if dupeCheck.contains(i) && dupeCheck2.contains(i) == false {
+dupeCheck2 += [i]
+}
+dupeCheck += [i]
+}
+
+print(dupes)
 ```
 
 ## Question 3
@@ -54,10 +71,23 @@ Identify if there are 3 integers in the following array that sum to 10. If so, p
 
 ```swift
 var tripleSumArr = [-20,-14, -8,-5,-3,-2,1,2,3,4,9,15,20,30]
+
+var sum = 10
+
+for i in 0..<tripleSumArr.count - 2 {
+for j in (i + 1)..<tripleSumArr.count - 1 {
+for k in (j + 1)..<tripleSumArr.count {
+if tripleSumArr[i] + tripleSumArr[j] + tripleSumArr[k] == sum {
+print("\(tripleSumArr[i]), \(tripleSumArr[j]), and \(tripleSumArr[k]) sum to \(sum)")
+}
+}
+}
+}
+
 ```
 
 
-## Question 3
+## Question 4
 
 ```swift
 let letterValues = [
@@ -98,7 +128,7 @@ b. Sort the string below in ascending order according the dictionary letterValue
 var codeStringTwo = "znwemnrfewpiqn"
 
 
-## Question 4
+## Question 5
 
 Given an Array of Arrays of Ints, write a function that returns the Array of Ints with the largest sum:
 
@@ -107,9 +137,37 @@ Given an Array of Arrays of Ints, write a function that returns the Array of Int
 Input: [[2,4,1],[3,0],[9,3]]
 
 Output: [9,3]
+
+var input = [[2,4,1],[3,0],[9,3]]
+
+func highestSumArray(input: [[Int]]) -> [Int] {
+var sum = 0
+var highestSum = 0
+var answer = [Int]()
+
+for i in input {
+for j in i {
+sum += j
+if j == i.last {
+sum += j
+if sum > highestSum {
+highestSum = sum
+sum = 0
+answer = i
+} else {
+sum = 0
+}
+}
+}
+}
+return answer
+}
+
+
+print(highestSumArray(input: input))
 ```
 
-## Question 5
+## Question 6
 
 ```swift
 struct Receipt {
@@ -129,7 +187,55 @@ b. Write a function that takes in an array of `Receipts` and returns an array of
 
 c. Write a function that takes in an array of `Receipts` and returns an array of those receipts sorted by price
 
-## Question 6
+```swift
+struct Receipt {
+let storeName: String
+let items: [ReceiptItem]
+
+func totalCost() -> Double {
+var priceArr = [Double()]
+for item in items {
+priceArr.append(item.price)
+}
+return priceArr.reduce(0, +)
+}
+}
+
+struct ReceiptItem {
+let name: String
+let price: Double
+}
+
+
+//a
+var apple = ReceiptItem(name: "apple", price: 1.50)
+var banana = ReceiptItem(name: "banana", price: 1.00)
+var orange = ReceiptItem(name: "orange", price: 2.00)
+
+var itemArr = [apple,banana,orange]
+
+var itemList = Receipt(storeName: "Whole Foods", items: itemArr)
+
+print(itemList.totalCost())
+
+//b
+func sameNames(receipt: [Receipt], storeName: String) -> [Receipt] {
+let returnArray = receipt.filter { ($0.storeName == storeName)
+}
+return returnArray
+}
+
+//c
+
+func sortedByPrice(ticket: [Receipt]) -> [Receipt] {
+let sortedPrice = ticket.sorted { $0.totalCost() < $1.totalCost() }
+return sortedPrice
+}
+```
+
+
+
+## Question 7
 
 a. The code below doesn't compile.  Why?  Fix it so that it does compile.
 
@@ -137,7 +243,7 @@ a. The code below doesn't compile.  Why?  Fix it so that it does compile.
 class Giant {
     var name: String
     var weight: Double
-    let homePlanet: String
+    var homePlanet: String
 
     init(name: String, weight: Double, homePlanet: String) {
         self.name = name
@@ -151,6 +257,8 @@ let fred = Giant(name: "Fred", weight: 340.0, homePlanet: "Earth")
 fred.name = "Brick"
 fred.weight = 999.2
 fred.homePlanet = "Mars"
+
+//The code doesn't compile because the homePlanet property is a constant, so it can't be changed. I have changed it to be mutable.
 ```
 
 b. Using the Giant class. What will the value of `edgar.name` be after the code below runs? How about `jason.name`? Explain why.
@@ -159,9 +267,11 @@ b. Using the Giant class. What will the value of `edgar.name` be after the code 
 let edgar = Giant(name: "Edgar", weight: 520.0, homePlanet: "Earth")
 let jason = edgar
 jason.name = "Jason"
+
+//The value of both 'edgar.name' and 'jason.name' will be 'Jason' after the code runs because they are reference types due to being derived from a class and not a struct. This means that they reference they same storage, so updating the property of one also changes that same property in the other in the same way.
 ```
 
-## Question 7
+## Question 8
 
 ```
 struct BankAccount {
@@ -180,6 +290,9 @@ struct BankAccount {
 
 a. Explain why the code above doesn't compile, then fix it.
 
+
+//The code doesn't compile because it is missing the 'mutating' keyword required to change the values of the properties of structs.
+
 b. Add a property called `deposits` of type `[Double]` that stores all of the deposits made to the bank account
 
 c. Add a property called `withdraws` of type `[Double]` that stores all of the withdraws made to the bank account
@@ -188,7 +301,37 @@ d. Add a property called `startingBalance`.  Have this property be set to the or
 
 e. Add a method called `totalGrowth` that returns a double representing the change in the balance from the starting balance to the current balance
 
-## Question 8
+```swift
+struct BankAccount {
+var owner: String
+var balance: Double
+var deposit: [Double]
+var withdrawal: [Double]
+let startingBalance = 0.0
+
+
+mutating func deposit(_ amount: Double) {
+balance += amount
+}
+
+mutating func withdraw(_ amount: Double) {
+balance -= amount
+}
+
+mutating func totalGrowth() -> Double {
+var transactions = startingBalance
+for i in deposit {
+transactions += i
+}
+for i in withdrawal {
+transactions -= i
+}
+return transactions
+}
+}
+```
+
+## Question 9
 
 ```swift
 enum GameOfThronesHouse: String {
@@ -210,7 +353,29 @@ House Lannister - A Lannister always pays his debts
 
 b. Move that function to inside the enum as a method
 
-## Question 9
+
+```swift
+
+enum GameOfThronesHouse: String {
+case stark, lannister, targaryen, baratheon
+
+func houseWords() -> String {
+switch self {
+case .baratheon:
+return "Ours is the Fury"
+case .stark:
+return "Winter is coming"
+case .targaryen:
+return "Fire and Blood"
+case .lannister:
+return "A Lannister always pays his debts"
+}
+}
+}
+```
+
+
+## Question 10
 
 What are the contents of `library1` and `library2`? Explain why.
 
@@ -234,7 +399,7 @@ let library2 = library
 library2.add(track: "Come As You Are")
 ```
 
-## Question 10
+## Question 11
 
 Make a function that takes in an array of strings and returns an array of strings. The function should determine if the string can be typed out using just one row on the keyboard. If the string can be typed out using just one row, that string should be in the returned array.  
 
